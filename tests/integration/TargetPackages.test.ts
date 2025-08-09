@@ -278,6 +278,10 @@ describe('Target Package Integration Tests', () => {
       // Should have proper error structure even on success
       expect(result).toHaveProperty('success');
       expect(result).toHaveProperty('warnings');
+      
+      // Verify error handling is integrated
+      expect(result.warnings).toBeDefined();
+      expect(Array.isArray(result.warnings)).toBe(true);
       expect(result).toHaveProperty('metrics');
     });
   });

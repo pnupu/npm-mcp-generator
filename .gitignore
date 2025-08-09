@@ -38,6 +38,9 @@ Thumbs.db
 # Generated MCP servers (for now, might want to include examples later)
 generated-servers/
 
+# Test output directory
+test-output/
+
 # Logs
 logs/
 *.log

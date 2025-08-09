@@ -10,6 +10,8 @@ import { UnpkgFetcher } from '../fetchers/UnpkgFetcher.js';
 import { ReadmeAnalyzer } from './ReadmeAnalyzer.js';
 import { TypeDefinitionAnalyzer } from './TypeDefinitionAnalyzer.js';
 import { ExampleAnalyzer } from './ExampleAnalyzer.js';
+import { ErrorHandler } from '../core/ErrorHandler.js';
+import { GracefulDegradation } from '../core/GracefulDegradation.js';
 
 export interface PackageAnalyzerOptions {
   includeExamples?: boolean;
@@ -25,6 +27,8 @@ export class PackageAnalyzer {
   private readmeAnalyzer: ReadmeAnalyzer;
   private typeAnalyzer: TypeDefinitionAnalyzer;
   private exampleAnalyzer: ExampleAnalyzer;
+  private errorHandler: ErrorHandler;
+  private gracefulDegradation: GracefulDegradation;
 
   constructor(
     githubToken?: string,
@@ -36,6 +40,8 @@ export class PackageAnalyzer {
     this.readmeAnalyzer = new ReadmeAnalyzer();
     this.typeAnalyzer = new TypeDefinitionAnalyzer();
     this.exampleAnalyzer = new ExampleAnalyzer();
+    this.errorHandler = new ErrorHandler();
+    this.gracefulDegradation = new GracefulDegradation();
   }
 
   /**
@@ -55,9 +61,17 @@ export class PackageAnalyzer {
     try {
       console.log(`🔍 Starting analysis of ${packageName}${version ? `@${version}` : ''}`);
 
-      // Step 1: Fetch package metadata
+      // Step 1: Fetch package metadata with error handling
       console.log('📦 Fetching package metadata...');
-      const packageInfoResult = await this.npmFetcher.getPackageInfo(packageName, version);
+      const packageInfoResult = await this.errorHandler.executeWithRetry(
+        () => this.npmFetcher.getPackageInfo(packageName, version),
+        {
+          operation: 'fetch-package-info',
+          packageName,
+          version,
+          metadata: { source: 'npm-registry' }
+        }
+      );
       
       if (!packageInfoResult.success) {
         return {
@@ -84,9 +98,23 @@ export class PackageAnalyzer {
         warnings.push(...packageInfoResult.warnings);
       }
 
-      // Step 2: Fetch and analyze README
+      // Step 2: Fetch and analyze README with error handling
       console.log('📖 Fetching and analyzing README...');
-      const readmeResult = await this.githubFetcher.getReadme(packageInfo.repository?.url);
+      let readmeResult;
+      try {
+        readmeResult = await this.errorHandler.executeWithRetry(
+          () => this.githubFetcher.getReadme(packageInfo.repository?.url),
+          {
+            operation: 'fetch-readme',
+            packageName,
+            metadata: { repositoryUrl: packageInfo.repository?.url }
+          }
+        );
+      } catch (error) {
+        // README fetch failed, but we can continue with degradation
+        readmeResult = { success: true, data: null, warnings: [`README fetch failed: ${error}`] };
+        warnings.push(`Could not fetch README: ${error}`);
+      }
       
       sources.push({
         type: 'github',
@@ -99,7 +127,7 @@ export class PackageAnalyzer {
       }
 
       const readmeAnalysisResult = await this.readmeAnalyzer.analyze(readmeResult.data || null);
-      const readmeAnalysis = readmeAnalysisResult.success ? readmeAnalysisResult.data! : this.readmeAnalyzer['createEmptyAnalysis']();
+      let readmeAnalysis = readmeAnalysisResult.success ? readmeAnalysisResult.data! : this.readmeAnalyzer['createEmptyAnalysis']();
 
       if (readmeAnalysisResult.warnings) {
         warnings.push(...readmeAnalysisResult.warnings);
@@ -174,7 +202,7 @@ export class PackageAnalyzer {
         completeness
       };
 
-      const analysis: PackageAnalysis = {
+      let analysis: PackageAnalysis = {
         packageInfo,
         readme: readmeAnalysis,
         typeDefinitions: typeDefinitionAnalysis,
@@ -182,6 +210,21 @@ export class PackageAnalyzer {
         apiReference,
         metadata
       };
+
+      // Apply graceful degradation if needed
+      if (this.gracefulDegradation.needsDegradation(analysis)) {
+        console.log('🛠️ Applying graceful degradation to improve analysis...');
+        const { analysis: improvedAnalysis, result } = await this.gracefulDegradation.applyDegradation(analysis);
+        analysis = improvedAnalysis;
+        
+        // Add degradation warnings
+        warnings.push(...result.warnings);
+        if (result.applied.length > 0) {
+          warnings.push(`Applied ${result.applied.length} degradation strategies to improve completeness`);
+        }
+        
+        console.log(`🔧 Degradation improved completeness by ${result.completenessImprovement}%`);
+      }
 
       const processingTime = Date.now() - startTime;
       console.log(`✅ Analysis complete in ${processingTime}ms`);
