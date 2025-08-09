@@ -94,9 +94,9 @@
   - Write tests for template rendering and code generation
   - _Requirements: 1.2, 1.3, 2.3, 3.2_
 
-- [ ] 5. Create command-line interface and main application
+- [x] 5. Create command-line interface and main application
   - **📝 Kiro Documentation**: Record CLI generation and end-to-end pipeline implementation help
-- [ ] 5.1 Implement CLI interface for package processing
+- [x] 5.1 Implement CLI interface for package processing
 
   - Build command-line interface for generating MCP servers from package names
   - Add options for version specification and output configuration
@@ -104,7 +104,7 @@
   - Create help documentation and usage examples
   - _Requirements: 2.1, 2.4, 4.2, 4.3_
 
-- [ ] 5.2 Build main application orchestrator
+- [x] 5.2 Build main application orchestrator
 
   - Create main application class that coordinates the entire pipeline
   - Implement end-to-end processing from package name to MCP server
