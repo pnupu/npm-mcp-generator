@@ -4,8 +4,8 @@
 
 import { promises as fs } from 'fs';
 import { join, resolve } from 'path';
-import { PackageAnalyzer, PackageAnalyzerOptions } from '../analyzers/PackageAnalyzer.js';
-import { MCPServerGenerator, MCPServerGeneratorOptions } from '../generators/MCPServerGenerator.js';
+import { PackageAnalyzer } from '../analyzers/PackageAnalyzer.js';
+import { MCPServerGenerator } from '../generators/MCPServerGenerator.js';
 import { PackageAnalysis } from '../types/PackageInfo.js';
 import { GeneratedMCPServer } from '../types/MCPTypes.js';
 import { AnalysisResult } from '../types/AnalysisResult.js';
@@ -312,14 +312,14 @@ export class ApplicationOrchestrator {
     }
   }
 
-  private buildAnalyzerOptions(options: GenerationOptions): PackageAnalyzerOptions {
+  private buildAnalyzerOptions(options: GenerationOptions): any {
     return {
       includeExamples: options.includeExamples,
       includeTypeDefinitions: options.includeTypeDefinitions
     };
   }
 
-  private buildGeneratorOptions(options: GenerationOptions): MCPServerGeneratorOptions {
+  private buildGeneratorOptions(options: GenerationOptions): any {
     return {
       serverName: options.serverName,
       includeTests: options.includeTests,
