@@ -1,0 +1,44 @@
+{
+  "name": "npm-mcp-generator",
+  "version": "1.0.0",
+  "description": "Automatically generate MCP servers from NPM package documentation",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/main.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "generate": "tsx src/main.ts",
+    "lint": "eslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "mcp",
+    "npm",
+    "ai",
+    "code-generation",
+    "documentation"
+  ],
+  "author": "Kiro Hackathon Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "typescript": "^5.3.0",
+    "node-fetch": "^3.3.2",
+    "cheerio": "^1.0.0-rc.12",
+    "markdown-it": "^14.0.0",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/jest": "^29.5.8",
+    "@types/markdown-it": "^13.0.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.6.0",
+    "eslint": "^8.54.0",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0"
+  }
+}
