@@ -128,6 +128,12 @@ This document tracks how Kiro was used throughout the development of the NPM Pac
 - Created comprehensive initial commit documenting completed tasks
 - Repository ready for hackathon submission with clean commit history
 
+**Kiro Hook Development:**
+- Created commit message generator hook triggered by Cmd+M
+- Hook analyzes staged Git changes and suggests conventional commit messages
+- Includes project-specific scopes (fetchers, types, tests, cli, docs)
+- Demonstrates Kiro's automation capabilities for development workflow
+
 ### Task 3: Analysis Components
 
 **Date:** [To be filled during implementation]
