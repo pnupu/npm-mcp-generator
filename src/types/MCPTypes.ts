@@ -126,7 +126,7 @@ export interface TemplateVariable {
 }
 
 export interface GenerationOptions {
-  outputDirectory: string;
+  outputDirectory?: string;
   serverName?: string;
   includeTests?: boolean;
   includeDocumentation?: boolean;
