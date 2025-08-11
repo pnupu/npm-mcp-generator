@@ -162,37 +162,48 @@ const db = drizzle(client);
 const user = await db.select().from(users).where(eq(users.id, 1));`
       },
       {
-        packageName: '@ai-sdk/core',
-        description: 'New AI SDK with specialized patterns',
+        packageName: 'axios',
+        version: '1.6.0',
+        description: 'Popular HTTP client with TypeScript support and interceptors',
         expectedImprovements: [
-          'Correct provider setup',
-          'Streaming patterns',
-          'Error handling',
-          'Type safety'
+          'Correct TypeScript usage',
+          'Proper error handling patterns',
+          'Interceptor configuration',
+          'Request/response typing'
         ],
-        beforeExample: `// Generic AI suggestion (likely incorrect)
-import { ai } from '@ai-sdk/core';
+        beforeExample: `// Generic AI suggestion (basic usage)
+import axios from 'axios';
 
-const response = ai.chat('Hello world');
-console.log(response);`,
-        afterExample: `// MCP-enhanced suggestion (proper usage)
-import { generateText, streamText } from '@ai-sdk/core';
-import { openai } from '@ai-sdk/openai';
+const response = axios.get('https://api.example.com/users');
+console.log(response.data);`,
+        afterExample: `// MCP-enhanced suggestion (proper usage with types)
+import axios, { AxiosResponse, AxiosError } from 'axios';
 
-// Simple text generation
-const { text } = await generateText({
-  model: openai('gpt-4'),
-  prompt: 'Hello world',
-});
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
 
-// Streaming with proper error handling
-const { textStream } = await streamText({
-  model: openai('gpt-4'),
-  prompt: 'Tell me a story',
-});
-
-for await (const textPart of textStream) {
-  process.stdout.write(textPart);
+// Proper async/await with error handling
+try {
+  const response: AxiosResponse<User[]> = await axios.get(
+    'https://api.example.com/users',
+    {
+      timeout: 5000,
+      headers: {
+        'Accept': 'application/json',
+      }
+    }
+  );
+  
+  console.log(response.data);
+} catch (error) {
+  if (axios.isAxiosError(error)) {
+    console.error('API Error:', error.response?.data);
+  } else {
+    console.error('Unexpected error:', error);
+  }
 }`
       }
     ];

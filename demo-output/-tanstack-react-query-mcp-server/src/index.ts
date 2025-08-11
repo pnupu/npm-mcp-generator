@@ -6,7 +6,7 @@
  * 
  * Package: @tanstack/react-query@5.0.0
  * Description: Hooks for managing, caching and syncing asynchronous and remote data in React
- * Generated: 2025-08-11T09:10:27.690Z
+ * Generated: 2025-08-11T12:00:28.986Z
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -594,7 +594,7 @@ ${ex.code}
     console.error(`@tanstack/react-query MCP server running on stdio`);
     console.error(`Available tools: ${["get_package_info","get_usage_examples","get_api_reference","search_package_docs","get_configuration_guide"]}`);
     console.error(`Package version: 5.0.0`);
-    console.error(`Generated: 2025-08-11T09:10:27.690Z`);
+    console.error(`Generated: 2025-08-11T12:00:28.986Z`);
   }
 }
 

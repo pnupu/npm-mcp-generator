@@ -6,7 +6,7 @@
  * 
  * Package: drizzle-orm@0.44.4
  * Description: Drizzle ORM package for SQL databases
- * Generated: 2025-08-11T09:10:35.118Z
+ * Generated: 2025-08-11T12:00:34.395Z
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -594,7 +594,7 @@ ${ex.code}
     console.error(`drizzle-orm MCP server running on stdio`);
     console.error(`Available tools: ${["get_package_info","get_usage_examples","get_api_reference","search_package_docs","get_configuration_guide"]}`);
     console.error(`Package version: 0.44.4`);
-    console.error(`Generated: 2025-08-11T09:10:35.119Z`);
+    console.error(`Generated: 2025-08-11T12:00:34.395Z`);
   }
 }
 

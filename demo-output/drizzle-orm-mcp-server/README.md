@@ -68,4 +68,4 @@ Add this server to your Kiro MCP configuration:
 ---
 
 *Generated automatically by NPM MCP Generator*
-*Generated on: 2025-08-11T09:10:35.122Z*
+*Generated on: 2025-08-11T12:00:34.399Z*

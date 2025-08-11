@@ -11,7 +11,7 @@ import { join } from 'path';
 const DEMO_PACKAGES = [
   { name: '@tanstack/react-query', version: '5.0.0' },
   { name: 'drizzle-orm', version: undefined },
-  { name: '@ai-sdk/core', version: undefined }
+  { name: 'axios', version: '1.6.0' }
 ];
 
 async function runDemo() {

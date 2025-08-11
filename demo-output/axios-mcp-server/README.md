@@ -1,13 +1,13 @@
-# @tanstack/react-query MCP Server
+# axios MCP Server
 
-An MCP server providing AI assistants with comprehensive knowledge about the @tanstack/react-query package.
+An MCP server providing AI assistants with comprehensive knowledge about the axios package.
 
 ## Package Information
 
-- **Name:** @tanstack/react-query
-- **Version:** 5.0.0
-- **Description:** Hooks for managing, caching and syncing asynchronous and remote data in React
-- **Repository:** git+https://github.com/TanStack/query.git
+- **Name:** axios
+- **Version:** 1.6.0
+- **Description:** Promise based HTTP client for the browser and node.js
+- **Repository:** git+https://github.com/axios/axios.git
 - **License:** MIT
 
 ## Available Tools
@@ -38,9 +38,9 @@ Add this server to your Kiro MCP configuration:
 ```json
 {
   "mcpServers": {
-    "@tanstack/react-query": {
+    "axios": {
       "command": "node",
-      "args": ["path/to/-tanstack-react-query-mcp-server/dist/index.js"]
+      "args": ["path/to/axios-mcp-server/dist/index.js"]
     }
   }
 }
@@ -54,18 +54,18 @@ Add this server to your Kiro MCP configuration:
 - **Documentation Search**: Search through package documentation ❌
 - **Configuration Guide**: Setup and configuration instructions ❌
 - **TypeScript Support**: Full TypeScript definitions and types ✅
-- **Multiple Languages**: Examples in multiple programming languages ❌
-- **Installation Instructions**: Package manager installation commands ✅
+- **Multiple Languages**: Examples in multiple programming languages ✅
+- **Installation Instructions**: Package manager installation commands ❌
 
 ## Analysis Quality
 
-- **Overall Completeness:** 30%
+- **Overall Completeness:** 95%
 - **README Quality:** 80%
-- **Type Definitions:** 40%
-- **Examples Available:** 0%
-- **API Reference:** 0%
+- **Type Definitions:** 100%
+- **Examples Available:** 100%
+- **API Reference:** 100%
 
 ---
 
 *Generated automatically by NPM MCP Generator*
-*Generated on: 2025-08-11T12:00:28.990Z*
+*Generated on: 2025-08-11T12:00:39.270Z*

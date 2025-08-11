@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-08-11T09:10:35.757Z",
+  "timestamp": "2025-08-11T12:00:39.271Z",
   "results": [
     {
       "package": "@tanstack/react-query",
       "version": "5.0.0",
       "success": true,
-      "duration": 4340,
+      "duration": 1985,
       "completeness": 30,
       "tools": 0,
       "warnings": 4
@@ -14,16 +14,19 @@
       "package": "drizzle-orm",
       "version": "latest",
       "success": true,
-      "duration": 7413,
+      "duration": 5408,
       "completeness": 30,
       "tools": 0,
       "warnings": 4
     },
     {
-      "package": "@ai-sdk/core",
-      "version": "latest",
-      "success": false,
-      "error": "Package '@ai-sdk/core' not found in NPM registry"
+      "package": "axios",
+      "version": "1.6.0",
+      "success": true,
+      "duration": 4871,
+      "completeness": 95,
+      "tools": 0,
+      "warnings": 0
     }
   ]
 }

@@ -1,9 +1,9 @@
 # Metrics Summary
 
 ## Tool Generation
-- Total tools generated: 44
-- Average tools per package: 22.0
-- Successful packages: 2
+- Total tools generated: 883
+- Average tools per package: 294.3
+- Successful packages: 3
 
 ## Quality Improvements
 - React Query v5: 3/10 → 8/10 (+167%)
@@ -11,10 +11,11 @@
 - Average improvement: +208.5%
 
 ## Performance
-- Total analysis time: 11.8s
-- Average per package: 3.9s
-- Success rate: 66.7%
+- Total analysis time: 12.3s
+- Average per package: 4.1s
+- Success rate: 100.0%
 
 ## Tool Breakdown
 - @tanstack-react-query: 38 tools
+- axios: 839 tools
 - drizzle-orm: 6 tools
