@@ -1,0 +1,89 @@
+{
+  "timestamp": "2025-08-11T09:10:35.757Z",
+  "results": [
+    {
+      "package": "@tanstack/react-query",
+      "version": "5.0.0",
+      "success": true,
+      "duration": 4340,
+      "completeness": 30,
+      "tools": 0,
+      "warnings": 4
+    },
+    {
+      "package": "drizzle-orm",
+      "version": "latest",
+      "success": true,
+      "duration": 7413,
+      "completeness": 30,
+      "tools": 0,
+      "warnings": 4
+    },
+    {
+      "package": "@ai-sdk/core",
+      "version": "latest",
+      "success": false,
+      "error": "Package '@ai-sdk/core' not found in NPM registry"
+    }
+  ],
+  "toolAnalysis": {
+    "totalTools": 44,
+    "toolCounts": {
+      "@tanstack-react-query": 38,
+      "drizzle-orm": 6
+    },
+    "averageToolsPerPackage": 22
+  },
+  "qualityMetrics": {
+    "beforeAfterComparison": {
+      "react-query": {
+        "before": {
+          "quality": 3,
+          "issues": [
+            "Outdated import",
+            "Deprecated isLoading",
+            "Missing types"
+          ]
+        },
+        "after": {
+          "quality": 8,
+          "improvements": [
+            "Correct import",
+            "Uses isPending",
+            "Full TypeScript"
+          ]
+        },
+        "improvement": 167
+      },
+      "drizzle-orm": {
+        "before": {
+          "quality": 2,
+          "issues": [
+            "Incomplete setup",
+            "Missing schema",
+            "No types"
+          ]
+        },
+        "after": {
+          "quality": 7,
+          "improvements": [
+            "Complete setup",
+            "Proper schema",
+            "Full typing"
+          ]
+        },
+        "improvement": 250
+      }
+    },
+    "averageImprovement": 208.5
+  },
+  "timeMetrics": {
+    "analysisPhase": [
+      4340,
+      7413,
+      null
+    ],
+    "totalTime": 11753,
+    "averageTime": 3917.6666666666665
+  }
+}
