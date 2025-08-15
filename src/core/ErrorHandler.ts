@@ -2,7 +2,7 @@
  * Comprehensive error handling system with retry logic and recovery mechanisms
  */
 
-import { AnalysisError, AnalysisErrorType, RetryOptions } from '../types/AnalysisResult.js';
+import { AnalysisError, AnalysisErrorType, RetryOptions } from '../types/AnalysisResult';
 import { Logger, LogLevel } from './Logger.js';
 
 export interface ErrorContext {

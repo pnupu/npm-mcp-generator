@@ -4,8 +4,8 @@
 
 import { promises as fs } from 'fs';
 import { join, resolve } from 'path';
-import { PackageAnalyzer } from '../analyzers/PackageAnalyzer.js';
-import { MCPServerGenerator } from '../generators/MCPServerGenerator.js';
+import { PackageAnalyzer } from '../analyzers/PackageAnalyzer';
+import { MCPServerGenerator } from '../generators/MCPServerGenerator';
 import { PackageAnalysis } from '../types/PackageInfo.js';
 import { GeneratedMCPServer } from '../types/MCPTypes.js';
 import { AnalysisResult } from '../types/AnalysisResult.js';

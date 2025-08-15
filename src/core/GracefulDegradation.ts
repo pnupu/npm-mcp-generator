@@ -2,7 +2,7 @@
  * Graceful degradation system for handling missing or incomplete data
  */
 
-import { PackageAnalysis, ReadmeAnalysis, TypeDefinitionAnalysis, ExampleAnalysis } from '../types/PackageInfo.js';
+import { PackageAnalysis, ReadmeAnalysis, TypeDefinitionAnalysis, ExampleAnalysis } from '../types/PackageInfo';
 import { MCPTool } from '../types/MCPTypes.js';
 import { AnalysisResult } from '../types/AnalysisResult.js';
 
