@@ -532,7 +532,7 @@ export class ToolGenerator {
             type: 'README Section',
             title: section.title,
             content: section.content.substring(0, 200) + '...',
-            relevance: this.calculateRelevance(section.title + ' ' + section.content, searchTerm)
+            relevance: calculateRelevance(section.title + ' ' + section.content, searchTerm)
           });
         }
       }
@@ -548,7 +548,7 @@ export class ToolGenerator {
             type: 'Usage Example',
             title: example.title,
             content: example.code.substring(0, 200) + '...',
-            relevance: this.calculateRelevance(example.title + ' ' + example.code, searchTerm)
+            relevance: calculateRelevance(example.title + ' ' + example.code, searchTerm)
           });
         }
       }
@@ -564,7 +564,7 @@ export class ToolGenerator {
             type: 'API Reference',
             title: item.name,
             content: item.description,
-            relevance: this.calculateRelevance(item.name + ' ' + item.description, searchTerm)
+            relevance: calculateRelevance(item.name + ' ' + item.description, searchTerm)
           });
         }
       });

@@ -44,6 +44,7 @@ test-output/
 # CLI test directories
 cli-test/
 final-test/
+fixed-test/
 
 # Logs
 logs/
