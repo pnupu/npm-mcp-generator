@@ -4,6 +4,9 @@
   "description": "Automatically generate MCP servers from NPM package documentation",
   "main": "dist/index.js",
   "type": "module",
+  "bin": {
+    "npm-mcp-generator": "bin/npm-mcp-generator"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/main.ts",

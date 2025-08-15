@@ -41,6 +41,10 @@ generated-servers/
 # Test output directory
 test-output/
 
+# CLI test directories
+cli-test/
+final-test/
+
 # Logs
 logs/
 *.log

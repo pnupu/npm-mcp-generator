@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+/**
+ * CLI wrapper for npm-mcp-generator
+ * Uses tsx to run the TypeScript source directly
+ */
+
+import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const srcPath = join(__dirname, '..', 'src', 'main.ts');
+
+// Pass all arguments to tsx
+const args = ['tsx', srcPath, ...process.argv.slice(2)];
+
+const child = spawn('npx', args, {
+  stdio: 'inherit',
+  shell: true
+});
+
+child.on('exit', (code) => {
+  process.exit(code || 0);
+});

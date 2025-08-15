@@ -9,8 +9,9 @@
 ## 🎯 Problem Statement
 
 AI assistants struggle with NPM packages because they:
+
 - Provide outdated API suggestions (especially for packages with breaking changes)
-- Give generic examples that don't match specific package patterns  
+- Give generic examples that don't match specific package patterns
 - Lack context for new or niche packages
 - Cannot access current documentation and TypeScript definitions
 
@@ -19,6 +20,7 @@ AI assistants struggle with NPM packages because they:
 ## 🚀 Solution
 
 The NPM MCP Generator automatically:
+
 1. **Analyzes any NPM package** in under 60 seconds
 2. **Generates MCP servers** with 5 specialized tools per package
 3. **Provides AI assistants** with accurate, current context through the Model Context Protocol
@@ -37,26 +39,33 @@ The NPM MCP Generator automatically:
 ## 📦 Installation
 
 ### Prerequisites
+
 - Node.js 18.0.0 or higher
 - npm or yarn package manager
 
-### Install from NPM
-```bash
-npm install -g npm-mcp-generator
-```
-
 ### Install from Source
+
 ```bash
-git clone https://github.com/your-username/npm-mcp-generator.git
+git clone https://github.com/pnupu/npm-mcp-generator.git
 cd npm-mcp-generator
 npm install
-npm run build
 npm link
+```
+
+### Direct Usage (No Installation)
+
+```bash
+# Clone and run directly
+git clone https://github.com/pnupu/npm-mcp-generator.git
+cd npm-mcp-generator
+npm install
+npx tsx src/main.ts generate <package-name>
 ```
 
 ## 🚀 Quick Start
 
 ### Generate an MCP Server
+
 ```bash
 # Generate for the latest version
 npm-mcp-generator generate lodash
@@ -72,6 +81,7 @@ npm-mcp-generator generate date-fns --verbose
 ```
 
 ### Use with Kiro
+
 After generating an MCP server, add it to your Kiro configuration:
 
 ```json
@@ -88,6 +98,7 @@ After generating an MCP server, add it to your Kiro configuration:
 ## 📖 Usage Examples
 
 ### Basic Usage
+
 ```bash
 # Analyze and generate MCP server for a package
 npm-mcp-generator generate axios
@@ -101,6 +112,7 @@ npm-mcp-generator generate axios
 ```
 
 ### Advanced Options
+
 ```bash
 # Generate with all options
 npm-mcp-generator generate @prisma/client \
@@ -112,6 +124,7 @@ npm-mcp-generator generate @prisma/client \
 ```
 
 ### Batch Generation
+
 ```bash
 # Generate servers for multiple packages
 npm-mcp-generator batch packages.json
@@ -131,58 +144,64 @@ npm-mcp-generator batch packages.json
 Each generated MCP server includes 5 specialized tools:
 
 ### 1. `get_package_info`
+
 Get comprehensive package information including metadata, dependencies, and repository details.
 
 ```typescript
 // Example usage in AI context
-const info = await tools.get_package_info({ 
-  includeMetadata: true 
+const info = await tools.get_package_info({
+  includeMetadata: true,
 });
 ```
 
 ### 2. `get_usage_examples`
+
 Retrieve code examples and usage patterns with proper imports and TypeScript types.
 
 ```typescript
-const examples = await tools.get_usage_examples({ 
-  category: 'basic',
-  format: 'typescript' 
+const examples = await tools.get_usage_examples({
+  category: "basic",
+  format: "typescript",
 });
 ```
 
 ### 3. `get_api_reference`
+
 Access detailed API documentation including functions, classes, interfaces, and types.
 
 ```typescript
-const api = await tools.get_api_reference({ 
+const api = await tools.get_api_reference({
   includeExamples: true,
-  format: 'markdown' 
+  format: "markdown",
 });
 ```
 
 ### 4. `search_package_docs`
+
 Search through package documentation, examples, and API references.
 
 ```typescript
-const results = await tools.search_package_docs({ 
-  query: 'authentication',
-  includeExamples: true 
+const results = await tools.search_package_docs({
+  query: "authentication",
+  includeExamples: true,
 });
 ```
 
 ### 5. `get_configuration_guide`
+
 Get setup instructions, configuration options, and integration guides.
 
 ```typescript
-const config = await tools.get_configuration_guide({ 
-  format: 'markdown',
-  includeExamples: true 
+const config = await tools.get_configuration_guide({
+  format: "markdown",
+  includeExamples: true,
 });
 ```
 
 ## 🏗️ Architecture
 
 ### Analysis Pipeline
+
 ```
 NPM Package → Multi-source Fetching → Analysis → MCP Generation → Ready-to-use Server
      ↓              ↓                    ↓           ↓              ↓
@@ -192,17 +211,20 @@ NPM Package → Multi-source Fetching → Analysis → MCP Generation → Ready-
 ### Core Components
 
 1. **Data Fetchers**
+
    - `NPMRegistryFetcher`: Package metadata and versions
-   - `GitHubFetcher`: README files and repository examples  
+   - `GitHubFetcher`: README files and repository examples
    - `UnpkgFetcher`: TypeScript definitions and package files
 
 2. **Analyzers**
+
    - `PackageAnalyzer`: Orchestrates the analysis process
    - `ReadmeAnalyzer`: Parses documentation and examples
    - `TypeDefinitionAnalyzer`: Extracts API structure from .d.ts files
    - `ExampleAnalyzer`: Identifies usage patterns
 
 3. **Generators**
+
    - `MCPServerGenerator`: Creates complete MCP server packages
    - `ToolGenerator`: Generates individual MCP tools
    - `TemplateEngine`: Uses templates for consistent output
@@ -215,6 +237,7 @@ NPM Package → Multi-source Fetching → Analysis → MCP Generation → Ready-
 ## ⚙️ Configuration
 
 ### CLI Options
+
 ```bash
 npm-mcp-generator generate <package-name> [options]
 
@@ -230,6 +253,7 @@ Options:
 ```
 
 ### Environment Variables
+
 ```bash
 # GitHub token for API access
 GITHUB_TOKEN=your_github_token
@@ -242,6 +266,7 @@ LOG_LEVEL=info
 ```
 
 ### Configuration File
+
 Create `.npmrcgen.json` in your project root:
 
 ```json
@@ -266,6 +291,7 @@ Create `.npmrcgen.json` in your project root:
 ## 🧪 Testing
 
 ### Run Tests
+
 ```bash
 # Run all tests
 npm test
@@ -279,6 +305,7 @@ npm run test:coverage
 ```
 
 ### Test Structure
+
 - **Unit Tests**: Individual component testing
 - **Integration Tests**: End-to-end package analysis
 - **Error Scenario Tests**: Error handling and recovery
@@ -287,6 +314,7 @@ npm run test:coverage
 ## 🔧 Development
 
 ### Setup Development Environment
+
 ```bash
 git clone https://github.com/your-username/npm-mcp-generator.git
 cd npm-mcp-generator
@@ -295,6 +323,7 @@ npm run build
 ```
 
 ### Development Scripts
+
 ```bash
 # Build the project
 npm run build
@@ -313,6 +342,7 @@ npm run type-check
 ```
 
 ### Project Structure
+
 ```
 npm-mcp-generator/
 ├── src/
@@ -332,12 +362,14 @@ npm-mcp-generator/
 ## 📊 Performance
 
 ### Benchmarks
+
 - **Analysis Time**: 2-8 seconds per package (average: 5.9s)
 - **Success Rate**: 95%+ for existing packages
 - **Memory Usage**: ~20MB peak during analysis
 - **Cache Hit Rate**: 60%+ for repeated analyses
 
 ### Optimization Tips
+
 1. **Use caching** for repeated analyses
 2. **Provide GitHub token** to avoid rate limiting
 3. **Skip examples** (`--no-examples`) for faster generation
@@ -348,21 +380,25 @@ npm-mcp-generator/
 The system handles various error scenarios gracefully:
 
 ### Network Errors
+
 - Automatic retry with exponential backoff
 - Network connectivity recovery
 - Fallback to cached data when available
 
 ### Package Issues
+
 - Missing packages: Clear error messages with suggestions
 - Invalid versions: Version resolution with alternatives
 - Private packages: Graceful handling with public alternatives
 
 ### Data Issues
+
 - Missing README: Generated from package description
 - No TypeScript definitions: Inferred from package structure
 - Incomplete examples: Generated common patterns
 
 ### Rate Limiting
+
 - GitHub API: Automatic backoff and retry
 - NPM Registry: Request throttling
 - unpkg.com: Fallback mechanisms
@@ -372,6 +408,7 @@ The system handles various error scenarios gracefully:
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ### Development Process
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes following our coding standards
@@ -382,6 +419,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 8. Open a Pull Request
 
 ### Coding Standards
+
 - Use TypeScript for all new code
 - Follow ESLint configuration
 - Add JSDoc comments for public APIs
@@ -409,18 +447,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🗺️ Roadmap
 
 ### v1.1 (Next Release)
+
 - [ ] Web interface for non-CLI users
 - [ ] Custom templates for specialized package types
 - [ ] Batch processing improvements
 - [ ] Enhanced caching mechanisms
 
 ### v1.2 (Future)
+
 - [ ] Auto-update mechanism for package changes
 - [ ] Analytics dashboard for usage metrics
 - [ ] Plugin system for custom analyzers
 - [ ] Integration with popular IDEs
 
 ### v2.0 (Long-term)
+
 - [ ] Real-time package monitoring
 - [ ] Community-driven template marketplace
 - [ ] Advanced AI integration features
@@ -430,4 +471,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with ❤️ using spec-driven development and Kiro**
 
-*Making AI assistance accurate for every NPM package*
+_Making AI assistance accurate for every NPM package_
