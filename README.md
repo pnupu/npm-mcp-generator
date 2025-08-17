@@ -49,6 +49,29 @@ The NPM MCP Generator automatically:
 git clone https://github.com/pnupu/npm-mcp-generator.git
 cd npm-mcp-generator
 npm install
+npm run build
+```
+
+### Environment Setup
+
+1. **Copy the environment template:**
+```bash
+cp .env.example .env
+```
+
+2. **Configure your API keys in `.env`:**
+```bash
+# OpenAI API Key (required for vector embeddings)
+OPENAI_API_KEY=sk-your-openai-api-key-here
+
+# GitHub API Token (optional, for better rate limits)
+GITHUB_TOKEN=ghp_your-github-token-here
+```
+
+3. **Get your API keys:**
+   - **OpenAI API Key**: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
+   - **GitHub Token**: Get from [GitHub Settings](https://github.com/settings/tokens) (optional, but recommended for better rate limits)
+npm install
 npm link
 ```
 
@@ -67,18 +90,38 @@ npx tsx src/main.ts generate <package-name>
 ### Generate an MCP Server
 
 ```bash
-# Generate for the latest version
+# Basic generation (uses environment variables if available)
 npm-mcp-generator generate lodash
 
 # Generate for a specific version
 npm-mcp-generator generate @tanstack/react-query --version 5.0.0
 
+# With enhanced vector search (requires OpenAI API key)
+npm-mcp-generator generate lodash --openai-key sk-your-key-here
+
+# Using environment variables (recommended)
+export OPENAI_API_KEY=sk-your-key-here
+export GITHUB_TOKEN=ghp-your-token-here
+npm-mcp-generator generate lodash --verbose
+
 # Specify output directory
 npm-mcp-generator generate drizzle-orm --output ./my-servers
-
-# Enable verbose logging
-npm-mcp-generator generate date-fns --verbose
 ```
+
+### Environment Variables vs CLI Options
+
+The generator supports both environment variables and CLI options. Environment variables provide a convenient way to set defaults:
+
+| Environment Variable | CLI Option | Purpose |
+|---------------------|------------|---------|
+| `OPENAI_API_KEY` | `--openai-key` | Enable vector embeddings for enhanced search |
+| `GITHUB_TOKEN` | `--github-token` | Better rate limits (5000/hr vs 60/hr) |
+| `DEFAULT_OUTPUT_DIR` | `--output` | Default output directory |
+
+**Benefits of using environment variables:**
+- 🔐 **Security**: Keep API keys out of command history
+- 🚀 **Convenience**: No need to specify keys for every command
+- 🔄 **Consistency**: Same configuration across all commands
 
 ### Use with Kiro
 
@@ -304,6 +347,29 @@ npm test -- tests/integration
 npm run test:coverage
 ```
 
+### E2E Test for Generated Servers
+
+```bash
+# Generate lodash server
+npm run generate -- generate lodash --output ./generated-servers
+
+# Run automated stdio tests against the server
+tsx scripts/test-lodash-server.ts
+```
+
+### TODO
+
+- Reduce embeddings bundle size in generated servers
+  - Consider: vector quantization (e.g., 8-bit) and/or externalizing embeddings with lazy load
+
+- Enhance semantic search
+  - Optional: runtime query-embedding path (flag/env) for higher relevance when an API key is available
+  - Add a control to tune hybrid weights (vector vs text) per server/template
+
+- Validation and metrics (Task 10.7)
+  - Add E2E performance metrics to scripts/test-lodash-server.ts (latency, bundle size) with thresholds
+  - Add comparison tests to show before/after search quality and size impact
+
 ### Test Structure
 
 - **Unit Tests**: Individual component testing
@@ -316,7 +382,7 @@ npm run test:coverage
 ### Setup Development Environment
 
 ```bash
-git clone https://github.com/your-username/npm-mcp-generator.git
+git clone https://github.com/pnupu/npm-mcp-generator.git
 cd npm-mcp-generator
 npm install
 npm run build
@@ -440,8 +506,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - 📧 **Email**: support@npm-mcp-generator.com
-- 🐛 **Issues**: [GitHub Issues](https://github.com/your-username/npm-mcp-generator/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-username/npm-mcp-generator/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/pnupu/npm-mcp-generator/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/pnupu/npm-mcp-generator/discussions)
 - 📖 **Documentation**: [Full Documentation](https://npm-mcp-generator.com/docs)
 
 ## 🗺️ Roadmap

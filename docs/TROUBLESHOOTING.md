@@ -410,8 +410,8 @@ When reporting issues, include:
 
 ### Community Support
 
-- 🐛 **GitHub Issues**: [Report bugs and request features](https://github.com/your-username/npm-mcp-generator/issues)
-- 💬 **Discussions**: [Ask questions and share ideas](https://github.com/your-username/npm-mcp-generator/discussions)
+- 🐛 **GitHub Issues**: [Report bugs and request features](https://github.com/pnupu/npm-mcp-generator/issues)
+- 💬 **Discussions**: [Ask questions and share ideas](https://github.com/pnupu/npm-mcp-generator/discussions)
 - 📧 **Email Support**: support@npm-mcp-generator.com
 - 📖 **Documentation**: [Full documentation](https://npm-mcp-generator.com/docs)
 
@@ -443,4 +443,4 @@ When reporting issues, include:
 
 ---
 
-If you can't find a solution to your problem in this guide, please [open an issue](https://github.com/your-username/npm-mcp-generator/issues) with detailed information about your problem.
+If you can't find a solution to your problem in this guide, please [open an issue](https://github.com/pnupu/npm-mcp-generator/issues) with detailed information about your problem.

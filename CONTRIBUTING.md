@@ -26,7 +26,7 @@ We welcome contributions in many forms:
 1. **Fork the repository**
    ```bash
    # Click "Fork" on GitHub, then clone your fork
-   git clone https://github.com/your-username/npm-mcp-generator.git
+   git clone https://github.com/pnupu/npm-mcp-generator.git
    cd npm-mcp-generator
    ```
 
@@ -499,7 +499,7 @@ Contributors are recognized in:
 If you have questions about contributing:
 
 1. Check the [documentation](docs/)
-2. Search [existing discussions](https://github.com/your-username/npm-mcp-generator/discussions)
+2. Search [existing discussions](https://github.com/pnupu/npm-mcp-generator/discussions)
 3. Open a new discussion
 4. Contact maintainers directly
 

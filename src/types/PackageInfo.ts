@@ -29,6 +29,11 @@ export interface PackageAnalysis {
   typeDefinitions: TypeDefinitionAnalysis;
   examples: ExampleAnalysis[];
   apiReference: APIReference;
+  comprehensiveDocumentation?: {
+    chunks: any[];
+    embeddedChunks?: any[];
+    embeddingStats?: any;
+  };
   metadata: AnalysisMetadata;
 }
 
@@ -243,7 +248,7 @@ export interface AnalysisMetadata {
 }
 
 export interface DataSource {
-  type: 'npm-registry' | 'github' | 'unpkg' | 'types';
+  type: 'npm-registry' | 'github' | 'unpkg' | 'types' | 'documentation-site';
   url: string;
   lastModified?: Date;
   success: boolean;

@@ -48,6 +48,13 @@ export class ToolGenerator {
         warnings.push('No configuration information found - skipping configuration tool');
       }
 
+      // Generate vector search tools if we have embeddings
+      if (analysis.comprehensiveDocumentation?.embeddedChunks && 
+          analysis.comprehensiveDocumentation.embeddedChunks.length > 0) {
+        tools.push(this.generateSemanticSearchTool(analysis));
+        console.log(`🔮 Added semantic search tool with ${analysis.comprehensiveDocumentation.embeddedChunks.length} embedded chunks`);
+      }
+
       if (tools.length === 1) {
         warnings.push('Only basic package info tool generated - limited package documentation');
       }
@@ -176,9 +183,12 @@ export class ToolGenerator {
   }
 
   private generateSearchDocsTool(analysis: PackageAnalysis): MCPTool {
+    const hasVectorSearch = analysis.comprehensiveDocumentation?.embeddedChunks && 
+                           analysis.comprehensiveDocumentation.embeddedChunks.length > 0;
+    
     return {
       name: 'search_package_docs',
-      description: `Search through ${analysis.packageInfo.name} documentation and examples`,
+      description: `Search through ${analysis.packageInfo.name} documentation and examples${hasVectorSearch ? ' using advanced semantic search with vector embeddings' : ''}`,
       inputSchema: {
         type: 'object',
         properties: {
@@ -318,6 +328,8 @@ export class ToolGenerator {
         return this.generateSearchDocsImplementation(analysis);
       case 'get_configuration_guide':
         return this.generateConfigurationGuideImplementation(analysis);
+      case 'semantic_search':
+        return this.generateSemanticSearchImplementation(analysis);
       default:
         return `
     // Implementation for ${tool.name}
@@ -336,7 +348,7 @@ export class ToolGenerator {
     return `
     const { includeMetadata = false, includeDependencies = false } = args;
     
-    const packageInfo = {
+    const packageInfo: any = {
       name: "${analysis.packageInfo.name}",
       version: "${analysis.packageInfo.version}",
       description: "${analysis.packageInfo.description}",
@@ -385,14 +397,14 @@ export class ToolGenerator {
     return `
     const { category, language, limit = 10 } = args;
     
-    let examples = [];
+    let examples: any[] = [];
     
     // Collect examples from README
     const readmeExamples = ${JSON.stringify(analysis.readme.usageExamples)};
     examples.push(...readmeExamples);
     
     // Collect examples from repository
-    const repoExamples = ${JSON.stringify(analysis.examples.map(ex => ({
+    const repoExamples: any[] = ${JSON.stringify(analysis.examples.map(ex => ({
       title: ex.filePath,
       description: `Example from ${ex.filePath}`,
       code: ex.content,
@@ -445,53 +457,77 @@ export class ToolGenerator {
 
   private generateAPIReferenceImplementation(analysis: PackageAnalysis): string {
     return `
-    const { type = 'all', search, includeExamples = true } = args;
-    
+    const { type = 'all', search } = args;
     const apiRef = ${JSON.stringify(analysis.apiReference)};
-    let sections = [];
+    const sections: string[] = [];
+
+    const matches = (s: string) => !search || String(s || '').toLowerCase().includes(String(search).toLowerCase());
 
     if (type === 'all' || type === 'functions') {
-      if (apiRef.functions.length > 0) {
-        let functions = apiRef.functions;
-        if (search) {
-          functions = functions.filter(f => f.name.toLowerCase().includes(search.toLowerCase()));
-        }
-        
-        if (functions.length > 0) {
-          sections.push('# Functions\\n\\n' + functions.map(f => 
-            \`## \$\{f.name\}\\n\\n\$\{f.description\}\\n\\n**Signature:** \\\`\$\{f.signature\}\\\`\\n\\n**Parameters:**\\n\$\{f.parameters.map(p => \`- \\\`\$\{p.name\}\\\` (\$\{p.type\}): \$\{p.description\}\`).join('\\n')\}\`
-          ).join('\\n\\n'));
-        }
+      const functions = (apiRef.functions || []);
+      if (functions.length > 0) {
+        const blocks = functions
+          .filter((f: any) => matches(f.name))
+          .map((f: any) => {
+            const params = Array.isArray(f.parameters)
+              ? f.parameters.map((p: any) => '- ' + p.name + ' (' + p.type + '): ' + String(p.description || '')).join('\\n')
+              : '';
+            return [
+              '## ' + f.name,
+              '',
+              String(f.description || ''),
+              '',
+              'Signature: ' + String(f.signature || ''),
+              '',
+              'Parameters:',
+              params
+            ].join('\\n');
+          });
+        if (blocks.length) sections.push('# Functions\\n\\n' + blocks.join('\\n\\n'));
       }
     }
 
     if (type === 'all' || type === 'classes') {
-      if (apiRef.classes.length > 0) {
-        let classes = apiRef.classes;
-        if (search) {
-          classes = classes.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
-        }
-        
-        if (classes.length > 0) {
-          sections.push('# Classes\\n\\n' + classes.map(c => 
-            \`## \$\{c.name\}\\n\\n\$\{c.description\}\\n\\n**Methods:**\\n\$\{c.methods.map(m => \`- \\\`\$\{m.signature\}\\\`\`).join('\\n')\}\`
-          ).join('\\n\\n'));
-        }
+      const classes = (apiRef.classes || []);
+      if (classes.length > 0) {
+        const blocks = classes
+          .filter((c: any) => matches(c.name))
+          .map((c: any) => {
+            const methods = Array.isArray(c.methods)
+              ? c.methods.map((m: any) => '- ' + String(m.signature || '')).join('\\n')
+              : '';
+            return [
+              '## ' + c.name,
+              '',
+              String(c.description || ''),
+              '',
+              'Methods:',
+              methods
+            ].join('\\n');
+          });
+        if (blocks.length) sections.push('# Classes\\n\\n' + blocks.join('\\n\\n'));
       }
     }
 
     if (type === 'all' || type === 'interfaces') {
-      if (apiRef.interfaces.length > 0) {
-        let interfaces = apiRef.interfaces;
-        if (search) {
-          interfaces = interfaces.filter(i => i.name.toLowerCase().includes(search.toLowerCase()));
-        }
-        
-        if (interfaces.length > 0) {
-          sections.push('# Interfaces\\n\\n' + interfaces.map(i => 
-            \`## \$\{i.name\}\\n\\n\$\{i.description\}\\n\\n**Properties:**\\n\$\{i.properties.map(p => \`- \\\`\$\{p.name\}\\\` (\$\{p.type\}): \$\{p.description\}\`).join('\\n')\}\`
-          ).join('\\n\\n'));
-        }
+      const interfaces = (apiRef.interfaces || []);
+      if (interfaces.length > 0) {
+        const blocks = interfaces
+          .filter((i: any) => matches(i.name))
+          .map((i: any) => {
+            const props = Array.isArray(i.properties)
+              ? i.properties.map((p: any) => '- ' + p.name + ' (' + p.type + '): ' + String(p.description || '')).join('\\n')
+              : '';
+            return [
+              '## ' + i.name,
+              '',
+              String(i.description || ''),
+              '',
+              'Properties:',
+              props
+            ].join('\\n');
+          });
+        if (blocks.length) sections.push('# Interfaces\\n\\n' + blocks.join('\\n\\n'));
       }
     }
 
@@ -513,14 +549,35 @@ export class ToolGenerator {
           text: sections.join('\\n\\n---\\n\\n')
         }
       ]
-    };`;
+    };
+    `;
   }
 
   private generateSearchDocsImplementation(analysis: PackageAnalysis): string {
     return `
     const { query, type = 'all', limit = 5 } = args;
     const searchTerm = query.toLowerCase();
-    let results = [];
+    let results: any[] = [];
+
+    // Prefer hybrid vector search if available
+    if (this.vectorSearch && typeof performHybridSearch === 'function') {
+      try {
+        const hybrid = performHybridSearch(this.vectorSearch, query, type === 'all' ? 'all' : type, limit, 0.1);
+        if (hybrid && hybrid.length > 0) {
+          let response = \`# Search Results for "\${query}"\n\nFound \${hybrid.length} relevant result(s):\n\n\`;
+          hybrid.forEach((result, index) => {
+            const chunk = result.chunk;
+            response += \`## \${index + 1}. \${chunk.metadata.title}\n\`;
+            response += \`**Type:** \${chunk.metadata.type} | **Relevance:** \${(result.relevanceScore * 100).toFixed(1)}%\n\n\`;
+            let content = chunk.markdown;
+            if (content.length > 500) content = content.substring(0, 500) + '...';
+            response += \`\${content}\n\n---\n\n\`;
+          });
+          response += \`\n*Powered by vector embeddings with \${this.vectorSearch.getStats().totalChunks} indexed chunks*\`;
+          return { content: [{ type: "text", text: response }] };
+        }
+      } catch {}
+    }
 
     if (type === 'all' || type === 'readme') {
       // Search README sections
@@ -540,7 +597,7 @@ export class ToolGenerator {
 
     if (type === 'all' || type === 'examples') {
       // Search usage examples
-      const examples = ${JSON.stringify(analysis.readme.usageExamples)};
+      const examples = ${JSON.stringify(analysis.readme.usageExamples)} as any[];
       for (const example of examples) {
         if (example.title.toLowerCase().includes(searchTerm) || 
             example.code.toLowerCase().includes(searchTerm)) {
@@ -556,8 +613,8 @@ export class ToolGenerator {
 
     if (type === 'all' || type === 'types') {
       // Search API reference
-      const apiRef = ${JSON.stringify(analysis.apiReference)};
-      [...apiRef.functions, ...apiRef.classes].forEach(item => {
+      const apiRef: any = ${JSON.stringify(analysis.apiReference)};
+      [...apiRef.functions, ...apiRef.classes].forEach((item: any) => {
         if (item.name.toLowerCase().includes(searchTerm) || 
             item.description.toLowerCase().includes(searchTerm)) {
           results.push({
@@ -597,7 +654,7 @@ export class ToolGenerator {
       ]
     };
 
-    function calculateRelevance(text, term) {
+    function calculateRelevance(text: string, term: string) {
       const lowerText = text.toLowerCase();
       const lowerTerm = term.toLowerCase();
       let score = 0;
@@ -664,4 +721,117 @@ export class ToolGenerator {
       ]
     };`;
   }
+
+  private generateSemanticSearchTool(analysis: PackageAnalysis): MCPTool {
+    return {
+      name: 'semantic_search',
+      description: `Perform semantic search through ${analysis.packageInfo.name} documentation using vector embeddings. Find relevant functions, examples, and guides based on natural language queries.`,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: {
+            type: 'string',
+            description: 'Natural language search query (e.g., "how to filter arrays", "authentication setup", "error handling")'
+          },
+          type: {
+            type: 'string',
+            enum: ['function', 'example', 'guide', 'all'],
+            description: 'Filter results by content type',
+            default: 'all'
+          },
+          limit: {
+            type: 'number',
+            description: 'Maximum number of results to return (1-20)',
+            default: 5
+          },
+          minSimilarity: {
+            type: 'number',
+            description: 'Minimum similarity score (0.0-1.0)',
+            default: 0.1
+          }
+        },
+        required: ['query'],
+        additionalProperties: false
+      }
+    };
+  }
+
+  private generateSemanticSearchImplementation(analysis: PackageAnalysis): string {
+    return `
+    const { query, type = 'all', limit = 5, minSimilarity = 0.1 } = args;
+    
+    if (!this.vectorSearch) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Vector search is not available for this package. This tool requires comprehensive documentation with embeddings."
+          }
+        ]
+      };
+    }
+    
+    try {
+      // Use hybrid text + vector search to approximate semantic matching without runtime embedding generation
+      const results = performHybridSearch(this.vectorSearch, query, type, limit, minSimilarity);
+      
+      if (results.length === 0) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: \`No results found for "\${query}". Try a different search term or lower the similarity threshold.\`
+            }
+          ]
+        };
+      }
+      
+      let response = \`# Search Results for "\${query}"\n\nFound \${results.length} relevant result(s):\n\n\`;
+      
+      results.forEach((result, index) => {
+        const chunk = result.chunk;
+        response += \`## \${index + 1}. \${chunk.metadata.title}\n\`;
+        response += \`**Type:** \${chunk.metadata.type} | **Relevance:** \${(result.relevanceScore * 100).toFixed(1)}%\n\n\`;
+        
+        if (chunk.metadata.functionName) {
+          response += \`**Function:** \${chunk.metadata.functionName}\`;
+          if (chunk.metadata.parameters && chunk.metadata.parameters.length > 0) {
+            response += \`(\${chunk.metadata.parameters.join(', ')})\`;
+          }
+          response += \`\n\n\`;
+        }
+        
+        // Truncate content if too long
+        let content = chunk.markdown;
+        if (content.length > 500) {
+          content = content.substring(0, 500) + '...';
+        }
+        
+        response += \`\${content}\n\n---\n\n\`;
+      });
+      
+      response += \`\n*Powered by vector embeddings with \${this.vectorSearch.getStats().totalChunks} indexed chunks*\`;
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: response
+          }
+        ]
+      };
+      
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: \`Search failed: \${error instanceof Error ? error.message : String(error)}\`
+          }
+        ]
+      };
+    }`;
+  }
+
+
 }

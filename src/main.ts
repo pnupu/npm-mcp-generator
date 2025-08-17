@@ -4,6 +4,7 @@
  * Main entry point for the NPM MCP Generator
  */
 
+import 'dotenv/config';
 import { Command } from 'commander';
 import { promises as fs } from 'fs';
 import { join, resolve } from 'path';
@@ -24,15 +25,26 @@ program
   .argument('<package-name>', 'NPM package name to analyze')
   .option('-v, --version <version>', 'Specific package version to analyze')
   .option('-o, --output <directory>', 'Output directory for generated server', './generated-servers')
+  .option('--docs-url <url>', 'Manual documentation URL override for comprehensive docs')
+  .option('--openai-key <key>', 'OpenAI API key for vector embeddings (enables enhanced search)', process.env.OPENAI_API_KEY)
+  .option('--no-embeddings', 'Disable vector embeddings generation')
   .option('--no-cache', 'Disable caching of analysis results')
   .option('--no-examples', 'Skip example analysis for faster generation')
   .option('--no-types', 'Skip TypeScript definition analysis')
-  .option('--github-token <token>', 'GitHub API token for better rate limits')
+  .option('--github-token <token>', 'GitHub API token for better rate limits', process.env.GITHUB_TOKEN)
   .option('--template <template>', 'Server template to use (basic, enhanced, minimal)')
   .option('--verbose', 'Enable verbose logging')
   .action(async (packageName: string, options) => {
     try {
       console.log(`🚀 NPM MCP Generator v1.0.0`);
+      
+      // Show environment variable status
+      if (process.env.OPENAI_API_KEY && options.verbose) {
+        console.log('🔑 Using OpenAI API key from environment');
+      }
+      if (process.env.GITHUB_TOKEN && options.verbose) {
+        console.log('🔑 Using GitHub token from environment');
+      }
       
       // Initialize orchestrator
       const orchestrator = new ApplicationOrchestrator();
@@ -139,8 +151,10 @@ program
   .command('batch')
   .description('Generate MCP servers for multiple packages from a file')
   .argument('<packages-file>', 'JSON file containing package list')
-  .option('-o, --output <directory>', 'Output directory for generated servers', './generated-servers')
-  .option('--github-token <token>', 'GitHub API token for better rate limits')
+  .option('-o, --output <directory>', 'Output directory for generated servers', process.env.DEFAULT_OUTPUT_DIR || './generated-servers')
+  .option('--verbose', 'Enable verbose logging', process.env.DEFAULT_VERBOSE === 'true')
+  .option('--github-token <token>', 'GitHub API token for better rate limits', process.env.GITHUB_TOKEN)
+  .option('--openai-key <key>', 'OpenAI API key for vector embeddings', process.env.OPENAI_API_KEY)
   .option('--verbose', 'Enable verbose logging')
   .action(async (packagesFile: string, options) => {
     try {

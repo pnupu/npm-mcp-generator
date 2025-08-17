@@ -8,7 +8,7 @@ export interface AnalysisResult<T = any> {
   success: boolean;
   data?: T;
   error?: AnalysisError;
-  warnings: string[];
+  warnings?: string[];
   metadata: ResultMetadata;
 }
 
@@ -30,6 +30,9 @@ export type AnalysisErrorType =
   | 'GENERATION_ERROR'
   | 'VALIDATION_ERROR'
   | 'TIMEOUT_ERROR'
+  | 'HTTP_ERROR'
+  | 'CRAWL_ERROR'
+  | 'PROCESSING_ERROR'
   | 'UNKNOWN_ERROR';
 
 export interface ResultMetadata {
@@ -38,6 +41,7 @@ export interface ResultMetadata {
   version: string;
   source: string;
   cacheHit?: boolean;
+  [key: string]: any; // Allow additional properties
 }
 
 export interface ValidationResult {

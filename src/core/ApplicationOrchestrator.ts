@@ -4,8 +4,8 @@
 
 import { promises as fs } from 'fs';
 import { join, resolve } from 'path';
-import { PackageAnalyzer } from '../analyzers/PackageAnalyzer';
-import { MCPServerGenerator } from '../generators/MCPServerGenerator';
+import { PackageAnalyzer } from '../analyzers/PackageAnalyzer.js';
+import { MCPServerGenerator } from '../generators/MCPServerGenerator.js';
 import { PackageAnalysis } from '../types/PackageInfo.js';
 import { GeneratedMCPServer } from '../types/MCPTypes.js';
 import { AnalysisResult } from '../types/AnalysisResult.js';
@@ -22,6 +22,9 @@ export interface GenerationOptions {
   includeExamples?: boolean;
   includeTypeDefinitions?: boolean;
   githubToken?: string;
+  docsUrl?: string;
+  openaiKey?: string;
+  generateEmbeddings?: boolean;
   
   // Generation options
   serverName?: string;
@@ -315,7 +318,10 @@ export class ApplicationOrchestrator {
   private buildAnalyzerOptions(options: GenerationOptions): any {
     return {
       includeExamples: options.includeExamples,
-      includeTypeDefinitions: options.includeTypeDefinitions
+      includeTypeDefinitions: options.includeTypeDefinitions,
+      docsUrl: options.docsUrl,
+      openaiKey: options.openaiKey,
+      generateEmbeddings: options.generateEmbeddings
     };
   }
 
@@ -343,6 +349,20 @@ export class ApplicationOrchestrator {
     // Write main server file
     await fs.writeFile(join(serverPath, 'src', 'index.ts'), server.serverCode);
     filesWritten++;
+
+    // Write embeddings file if available
+    if (this.generator.hasEmbeddings()) {
+      await fs.writeFile(join(serverPath, 'src', 'embeddings.js'), this.generator.generateEmbeddingsFile());
+      filesWritten++;
+      console.log(`📦 Wrote embeddings file with ${this.generator['embeddingsData'].length} chunks`);
+    }
+
+    // Write documentation markdown file if available
+    if (this.generator.hasEmbeddings()) {
+      await fs.writeFile(join(serverPath, 'documentation.md'), this.generator.generateDocumentationFile());
+      filesWritten++;
+      console.log(`📝 Wrote documentation.md with processed chunks`);
+    }
 
     // Write package.json
     await fs.writeFile(join(serverPath, 'package.json'), JSON.stringify(server.packageJson, null, 2));
@@ -395,7 +415,10 @@ export class ApplicationOrchestrator {
       options: {
         includeExamples: cliOptions.examples !== false,
         includeTypeDefinitions: cliOptions.types !== false,
-        githubToken: cliOptions.githubToken,
+        githubToken: cliOptions.githubToken || process.env.GITHUB_TOKEN,
+        docsUrl: cliOptions.docsUrl,
+        openaiKey: cliOptions.openaiKey || process.env.OPENAI_API_KEY,
+        generateEmbeddings: cliOptions.embeddings !== false && process.env.DEFAULT_EMBEDDINGS !== 'false',
         serverName: cliOptions.serverName,
         template: cliOptions.template,
         includeTests: cliOptions.includeTests,

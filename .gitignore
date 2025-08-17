@@ -49,6 +49,7 @@ fixed-test/
 # Logs
 logs/
 *.log
+debug-docs/
 
 # Runtime data
 pids/

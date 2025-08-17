@@ -1,93 +1,74 @@
 {
-  "timestamp": "2025-08-11T12:00:39.271Z",
-  "results": [
-    {
-      "package": "@tanstack/react-query",
-      "version": "5.0.0",
-      "success": true,
-      "duration": 1985,
-      "completeness": 30,
-      "tools": 0,
-      "warnings": 4
-    },
-    {
-      "package": "drizzle-orm",
-      "version": "latest",
-      "success": true,
-      "duration": 5408,
-      "completeness": 30,
-      "tools": 0,
-      "warnings": 4
-    },
-    {
-      "package": "axios",
-      "version": "1.6.0",
-      "success": true,
-      "duration": 4871,
-      "completeness": 95,
-      "tools": 0,
-      "warnings": 0
-    }
-  ],
-  "toolAnalysis": {
-    "totalTools": 883,
-    "toolCounts": {
-      "@tanstack-react-query": 38,
-      "axios": 839,
-      "drizzle-orm": 6
-    },
-    "averageToolsPerPackage": 294.3333333333333
+  "timestamp": "2025-08-17T12:59:42.939Z",
+  "embeddings": {
+    "sizeBytes": 5703028,
+    "sizeMB": 5.44
   },
-  "qualityMetrics": {
-    "beforeAfterComparison": {
-      "react-query": {
-        "before": {
-          "quality": 3,
-          "issues": [
-            "Outdated import",
-            "Deprecated isLoading",
-            "Missing types"
-          ]
-        },
-        "after": {
-          "quality": 8,
-          "improvements": [
-            "Correct import",
-            "Uses isPending",
-            "Full TypeScript"
-          ]
-        },
-        "improvement": 167
+  "queries": [
+    {
+      "query": "curryRight",
+      "baseline": {
+        "ms": 22,
+        "length": 44,
+        "top": null
       },
-      "drizzle-orm": {
-        "before": {
-          "quality": 2,
-          "issues": [
-            "Incomplete setup",
-            "Missing schema",
-            "No types"
-          ]
-        },
-        "after": {
-          "quality": 7,
-          "improvements": [
-            "Complete setup",
-            "Proper schema",
-            "Full typing"
-          ]
-        },
-        "improvement": 250
+      "vector": {
+        "ms": 20,
+        "length": 1674,
+        "top": "[](#map)`_.map(collection, [iteratee=_.identity])`"
       }
     },
-    "averageImprovement": 208.5
-  },
-  "timeMetrics": {
-    "analysisPhase": [
-      1985,
-      5408,
-      4871
-    ],
-    "totalTime": 12264,
-    "averageTime": 4088
-  }
+    {
+      "query": "filter arrays",
+      "baseline": {
+        "ms": 21,
+        "length": 47,
+        "top": null
+      },
+      "vector": {
+        "ms": 20,
+        "length": 1654,
+        "top": "vowels"
+      }
+    },
+    {
+      "query": "map",
+      "baseline": {
+        "ms": 21,
+        "length": 268,
+        "top": null
+      },
+      "vector": {
+        "ms": 22,
+        "length": 1781,
+        "top": "[](#map)`_.map(collection, [iteratee=_.identity])`"
+      }
+    },
+    {
+      "query": "debounce",
+      "baseline": {
+        "ms": 21,
+        "length": 42,
+        "top": null
+      },
+      "vector": {
+        "ms": 21,
+        "length": 1640,
+        "top": "[](#debounce)`_.debounce(func, [wait=0], [options={}])`"
+      }
+    },
+    {
+      "query": "throttle",
+      "baseline": {
+        "ms": 22,
+        "length": 42,
+        "top": null
+      },
+      "vector": {
+        "ms": 19,
+        "length": 1585,
+        "top": "[](#throttle)`_.throttle(func, [wait=0], [options={}])`"
+      }
+    }
+  ]
 }
