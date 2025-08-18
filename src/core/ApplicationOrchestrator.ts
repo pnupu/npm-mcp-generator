@@ -23,6 +23,7 @@ export interface GenerationOptions {
   includeTypeDefinitions?: boolean;
   githubToken?: string;
   docsUrl?: string;
+  docsFile?: string;
   openaiKey?: string;
   generateEmbeddings?: boolean;
   
@@ -320,6 +321,7 @@ export class ApplicationOrchestrator {
       includeExamples: options.includeExamples,
       includeTypeDefinitions: options.includeTypeDefinitions,
       docsUrl: options.docsUrl,
+      docsFile: options.docsFile,
       openaiKey: options.openaiKey,
       generateEmbeddings: options.generateEmbeddings
     };
@@ -417,6 +419,7 @@ export class ApplicationOrchestrator {
         includeTypeDefinitions: cliOptions.types !== false,
         githubToken: cliOptions.githubToken || process.env.GITHUB_TOKEN,
         docsUrl: cliOptions.docsUrl,
+        docsFile: cliOptions.docsFile,
         openaiKey: cliOptions.openaiKey || process.env.OPENAI_API_KEY,
         generateEmbeddings: cliOptions.embeddings !== false && process.env.DEFAULT_EMBEDDINGS !== 'false',
         serverName: cliOptions.serverName,

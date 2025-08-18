@@ -24,6 +24,7 @@ export interface PackageAnalyzerOptions {
   includeExamples?: boolean;
   includeTypeDefinitions?: boolean;
   docsUrl?: string;
+  docsFile?: string;
   openaiKey?: string;
   generateEmbeddings?: boolean;
   maxRetries?: number;
@@ -112,18 +113,24 @@ export class PackageAnalyzer {
         warnings.push(...packageInfoResult.warnings);
       }
 
-      // Step 2: Fetch and analyze README with error handling
+      // Step 2: Fetch and analyze README or local docs file with error handling
       console.log("📖 Fetching and analyzing README...");
       let readmeResult;
       try {
-        readmeResult = await this.errorHandler.executeWithRetry(
-          () => this.githubFetcher.getReadme(packageInfo.repository?.url),
-          {
-            operation: "fetch-readme",
-            packageName,
-            metadata: { repositoryUrl: packageInfo.repository?.url },
-          }
-        );
+        if (options.docsFile) {
+          const fs = await import('fs/promises');
+          const content = await fs.readFile(options.docsFile, 'utf-8');
+          readmeResult = { success: true, data: content, warnings: [] };
+        } else {
+          readmeResult = await this.errorHandler.executeWithRetry(
+            () => this.githubFetcher.getReadme(packageInfo.repository?.url),
+            {
+              operation: "fetch-readme",
+              packageName,
+              metadata: { repositoryUrl: packageInfo.repository?.url },
+            }
+          );
+        }
       } catch (error) {
         // README fetch failed, but we can continue with degradation
         readmeResult = {

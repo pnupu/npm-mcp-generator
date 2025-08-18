@@ -23,9 +23,11 @@ program
   .command('generate')
   .description('Generate an MCP server for an NPM package')
   .argument('<package-name>', 'NPM package name to analyze')
-  .option('-v, --version <version>', 'Specific package version to analyze')
+  .option('--pkg-version <version>', 'Specific package version to analyze')
   .option('-o, --output <directory>', 'Output directory for generated server', './generated-servers')
   .option('--docs-url <url>', 'Manual documentation URL override for comprehensive docs')
+  .option('--docs-file <path>', 'Use a local Markdown file as documentation (overrides README)')
+  .option('--docs-file <path>', 'Use a local Markdown file as documentation (overrides README)')
   .option('--openai-key <key>', 'OpenAI API key for vector embeddings (enables enhanced search)', process.env.OPENAI_API_KEY)
   .option('--no-embeddings', 'Disable vector embeddings generation')
   .option('--no-cache', 'Disable caching of analysis results')
@@ -62,7 +64,7 @@ program
       // Create generation request
       const request = ApplicationOrchestrator.createGenerationRequest(
         packageName,
-        options.version,
+        options.pkgVersion,
         options.output,
         options
       );
@@ -149,72 +151,10 @@ program
 
 program
   .command('batch')
-  .description('Generate MCP servers for multiple packages from a file')
-  .argument('<packages-file>', 'JSON file containing package list')
-  .option('-o, --output <directory>', 'Output directory for generated servers', process.env.DEFAULT_OUTPUT_DIR || './generated-servers')
-  .option('--verbose', 'Enable verbose logging', process.env.DEFAULT_VERBOSE === 'true')
-  .option('--github-token <token>', 'GitHub API token for better rate limits', process.env.GITHUB_TOKEN)
-  .option('--openai-key <key>', 'OpenAI API key for vector embeddings', process.env.OPENAI_API_KEY)
-  .option('--verbose', 'Enable verbose logging')
-  .action(async (packagesFile: string, options) => {
-    try {
-      console.log(`🚀 NPM MCP Generator - Batch Mode`);
-      
-      // Read packages file
-      const packagesData = JSON.parse(await fs.readFile(packagesFile, 'utf-8'));
-      const packages = Array.isArray(packagesData) ? packagesData : packagesData.packages;
-      
-      if (!Array.isArray(packages)) {
-        console.error('❌ Invalid packages file format. Expected array of package names or objects.');
-        process.exit(1);
-      }
-
-      // Initialize orchestrator
-      const orchestrator = new ApplicationOrchestrator();
-      
-      // Create generation requests
-      const requests = packages.map(pkg => {
-        const packageName = typeof pkg === 'string' ? pkg : pkg.name;
-        const version = typeof pkg === 'object' ? pkg.version : undefined;
-        
-        return ApplicationOrchestrator.createGenerationRequest(
-          packageName,
-          version,
-          options.output,
-          options
-        );
-      });
-
-      // Generate servers
-      const results = await orchestrator.generateBatch(requests);
-      
-      // Summary
-      const successful = results.filter(r => r.success);
-      const failed = results.filter(r => !r.success);
-      
-      console.log(`\n📊 Batch Generation Complete:`);
-      console.log(`   Total packages: ${results.length}`);
-      console.log(`   Successful: ${successful.length}`);
-      console.log(`   Failed: ${failed.length}`);
-      
-      if (failed.length > 0) {
-        console.log(`\n❌ Failed packages:`);
-        for (const result of failed) {
-          console.log(`   - ${result.packageName}: ${result.error}`);
-        }
-      }
-
-      if (successful.length > 0) {
-        console.log(`\n✅ Generated servers:`);
-        for (const result of successful) {
-          console.log(`   - ${result.packageName} (${result.metrics.toolsGenerated} tools)`);
-        }
-      }
-
-    } catch (error) {
-      console.error('❌ Batch generation failed:', error);
-      process.exit(1);
-    }
+  .description('Generate MCP servers for multiple packages from a file (disabled)')
+  .action(() => {
+    console.error('❌ The batch command is currently disabled to ensure compatibility with custom docs URLs/files.');
+    process.exit(1);
   });
 
 program
